@@ -2,8 +2,12 @@
   <div id="app">
     <TodoHeader></TodoHeader>
     <TodoInput @addTodoItem="addOneItem"></TodoInput>
-    <TodoList :propsdata="todoItems" @removeItem="removeOneItem"></TodoList>
-    <TodoFooter></TodoFooter>
+    <TodoList 
+      :propsdata="todoItems" 
+      @removeItem="removeOneItem" 
+      @toggleItem="toggleOneItem"
+    ></TodoList>
+    <TodoFooter @clearAll="clearAllItems"></TodoFooter>
   </div>
 </template>
 
@@ -28,6 +32,16 @@ export default {
     removeOneItem: function(todoItem, index) {
       localStorage.removeItem(todoItem.item);
       this.todoItems.splice(index, 1);
+    },
+    toggleOneItem: function(todoItem, index) {
+      this.todoItems[index].completed = !this.todoItems[index].completed;
+      // 로컬 스토리지의 데이터를 갱신
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    },
+    clearAllItems: function() {
+      localStorage.clear();
+      this.todoItems = [];
     }
   },
   created: function() {
